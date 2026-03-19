@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eid Mubarak · Ri-Sō 理創 Challenges</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Noto+Naskh+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0e;
+    --surface: #111118;
+    --card: #16161f;
+    --gold: #c9a84c;
+    --gold-light: #e8c76a;
+    --gold-dim: #7a6230;
+    --green: #2d6a4f;
+    --green-light: #52b788;
+    --text: #e8e4d8;
+    --muted: #7a7870;
+    --border: rgba(201,168,76,0.15);
+    --border-strong: rgba(201,168,76,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Star/particle background */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0;
+    animation: twinkle var(--d) var(--delay) infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(1); }
+    50% { opacity: var(--op); transform: scale(1.5); }
+  }
+
+  /* Crescent moon decoration */
+  .moon-deco {
+    position: fixed;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    box-shadow: -40px 40px 0 0 var(--gold-dim);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 80px 24px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .arabic-greeting {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+    text-shadow: 0 0 60px rgba(201,168,76,0.3);
+    animation: fadeDown 1s ease both;
+  }
+
+  .eid-title {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-style: italic;
+    color: var(--muted);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 300;
+    margin-bottom: 40px;
+    animation: fadeDown 1s 0.15s ease both;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 32px;
+    animation: fadeDown 1s 0.25s ease both;
+  }
+  .divider-line {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-dim));
+  }
+  .divider-line:last-child {
+    background: linear-gradient(to left, transparent, var(--gold-dim));
+  }
+  .divider-icon { color: var(--gold); font-size: 1.1rem; }
+
+  .program-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(201,168,76,0.07);
+    border: 1px solid var(--border-strong);
+    padding: 10px 22px;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    animation: fadeDown 1s 0.3s ease both;
+  }
+
+  .hero-text {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    animation: fadeDown 1s 0.35s ease both;
+  }
+  .hero-text em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 560px;
+    margin: 0 auto 50px;
+    line-height: 1.7;
+    animation: fadeDown 1s 0.45s ease both;
+  }
+
+  .prizes-strip {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 70px;
+    animation: fadeDown 1s 0.55s ease both;
+  }
+  .prize-chip {
+    background: rgba(82,183,136,0.08);
+    border: 1px solid rgba(82,183,136,0.25);
+    color: var(--green-light);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    padding: 6px 14px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Section label */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  /* Challenge Cards */
+  .challenges-grid {
+    display: grid;
+    gap: 24px;
+    margin-bottom: 80px;
+  }
+
+  .challenge-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    animation: fadeUp 0.8s both;
+  }
+  .challenge-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .challenge-card:nth-child(1) { animation-delay: 0.1s; }
+  .challenge-card:nth-child(2) { animation-delay: 0.2s; }
+  .challenge-card:nth-child(3) { animation-delay: 0.3s; }
+  .challenge-card:nth-child(4) { animation-delay: 0.4s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .card-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    margin-top: -2px;
+  }
+
+  .card-title-group { flex: 1; }
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .card-tagline {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .card-body { padding: 24px 32px 28px; }
+
+  .card-desc {
+    font-size: 1rem;
+    color: #b8b4a8;
+    line-height: 1.75;
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+
+  /* MCQ Challenge */
+  .mcq-question {
+    background: rgba(201,168,76,0.04);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--gold-light);
+    line-height: 1.6;
+  }
+
+  .mcq-options { display: grid; gap: 8px; margin-bottom: 20px; }
+  .mcq-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .mcq-option:hover { border-color: var(--gold-dim); background: rgba(201,168,76,0.05); }
+  .mcq-option.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); color: var(--gold-light); }
+  .mcq-option.correct { border-color: var(--green-light); background: rgba(82,183,136,0.1); color: var(--green-light); }
+  .mcq-option.wrong { border-color: #c0392b; background: rgba(192,57,43,0.08); color: #e07070; }
+  .opt-letter {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold-dim);
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  .mcq-result {
+    display: none;
+    padding: 14px 18px;
+    border-radius: 2px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .mcq-result.show { display: block; }
+  .mcq-result.correct-result { background: rgba(82,183,136,0.1); border: 1px solid rgba(82,183,136,0.3); color: var(--green-light); }
+  .mcq-result.wrong-result { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.25); color: #e07070; }
+
+  /* Quiz track */
+  .quiz-questions { display: grid; gap: 20px; margin-bottom: 20px; }
+  .quiz-q label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .quiz-q select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    padding: 12px 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .quiz-q select:focus { border-color: var(--gold-dim); }
+
+  .track-result {
+    display: none;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid var(--border-strong);
+    border-radius: 2px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .track-result.show { display: block; }
+  .track-name { font-size: 1.6rem; color: var(--gold-light); margin-bottom: 8px; }
+  .track-desc { font-size: 0.95rem; color: var(--muted); font-style: italic; line-height: 1.6; }
+  .track-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+  /* Caption challenge */
+  .caption-image {
+    background: linear-gradient(135deg, #0d1f2d 0%, #1a0e2e 50%, #0d1a15 100%);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 40px 20px;
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .caption-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(45,106,79,0.08) 0%, transparent 60%);
+  }
+  .ecg-svg { position: relative; z-index: 1; }
+  .brain-label {
+    position: relative;
+    z-index: 1;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+
+  .caption-input-wrap { margin-bottom: 16px; }
+  .caption-input-wrap textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    padding: 14px 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    resize: none;
+    height: 90px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .caption-input-wrap textarea:focus { border-color: var(--gold-dim); }
+  .caption-input-wrap textarea::placeholder { color: var(--muted); font-style: italic; }
+
+  /* Tag challenge */
+  .tag-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .track-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .track-pill:hover { border-color: var(--gold-dim); background: rgba(201,168,76,0.04); }
+  .track-pill-icon { font-size: 1.5rem; margin-bottom: 6px; }
+  .track-pill-name { font-size: 0.85rem; color: var(--muted); }
+
+  .tag-names {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .tag-names input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    padding: 12px 14px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .tag-names input:focus { border-color: var(--gold-dim); }
+  .tag-names input::placeholder { color: var(--muted); font-style: italic; }
+
+  .tag-result {
+    display: none;
+    background: rgba(82,183,136,0.06);
+    border: 1px solid rgba(82,183,136,0.2);
+    border-radius: 2px;
+    padding: 16px 20px;
+    font-size: 0.95rem;
+    color: var(--green-light);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .tag-result.show { display: block; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-gold {
+    background: var(--gold);
+    color: #0a0a0e;
+    font-weight: 500;
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-outline:hover { background: rgba(201,168,76,0.08); }
+  .btn-green {
+    background: var(--green);
+    color: var(--green-light);
+    border: 1px solid rgba(82,183,136,0.3);
+  }
+  .btn-green:hover { background: #3a7a5f; transform: translateY(-1px); }
+
+  .card-footer {
+    padding: 0 32px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Share hint */
+  .share-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Prizes section */
+  .prizes-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 40px 40px 36px;
+    margin-bottom: 80px;
+    animation: fadeUp 0.8s 0.5s both;
+  }
+
+  .prizes-title {
+    font-size: 1.8rem;
+    font-weight: 300;
+    margin-bottom: 8px;
+  }
+  .prizes-title em { font-style: italic; color: var(--gold-light); }
+
+  .prizes-sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-bottom: 32px;
+  }
+
+  .prizes-list { display: grid; gap: 16px; }
+  .prize-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    transition: border-color 0.2s;
+  }
+  .prize-item:hover { border-color: var(--border-strong); }
+  .prize-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold-dim);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .prize-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .prize-info { flex: 1; }
+  .prize-name { font-size: 1rem; color: var(--text); margin-bottom: 3px; }
+  .prize-detail { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 40px 24px 60px;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+  .footer-logo {
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .footer-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .footer-cta {
+    margin-top: 24px;
+  }
+  .footer-cta a {
+    color: var(--gold);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-strong);
+    padding-bottom: 2px;
+    transition: color 0.2s;
+  }
+  .footer-cta a:hover { color: var(--gold-light); }
+</style>
+</head>
+<body>
+
+<!-- Background stars -->
+<div class="stars" id="stars"></div>
+<div class="moon-deco"></div>
+
+<header>
+  <div class="arabic-greeting">عيد مبارك</div>
+  <div class="eid-title">Eid Mubarak · A Blessed Celebration</div>
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-icon">🌙</span>
+    <div class="divider-line"></div>
+  </div>
+  <div class="program-badge">
+    <span>☽</span> IEEE EMBS E-JUST · Ri-Sō 理創 Research Program 2026
+  </div>
+  <div class="hero-text">
+    Celebrate Eid with a<br><em>research challenge</em>
+  </div>
+  <p class="hero-sub">
+    Four interactive challenges blending the spirit of Eid with the curiosity that drives great biomedical research. Winners earn real program rewards.
+  </p>
+  <div class="prizes-strip">
+    <div class="prize-chip">✓ Fast-track application</div>
+    <div class="prize-chip">✓ 1-on-1 mentor session</div>
+    <div class="prize-chip">✓ Social spotlight</div>
+    <div class="prize-chip">✓ Early webinar access</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="section-label">— The Challenges —</div>
+
+  <div class="challenges-grid">
+
+    <!-- Challenge 1: MCQ Riddle -->
+    <div class="challenge-card">
+      <div class="card-header">
+        <span class="card-num">01</span>
+        <span class="card-icon">🧠</span>
+        <div class="card-title-group">
+          <div class="card-title">Eid Research Riddle</div>
+          <div class="card-tagline">Test your biomedical instincts</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">A biomedical MCQ — just like the Ri-Sō program's own assessment. First to comment the correct answer on our Facebook post wins a fast-track application review.</p>
+        <div class="mcq-question">
+          🎯 In a highly imbalanced medical dataset — 99% healthy patients, 1% sick — which evaluation metric gives you the most meaningful insight into your model's performance?
+        </div>
+        <div class="mcq-options" id="mcq1">
+          <div class="mcq-option" onclick="checkMCQ(this, false)" data-idx="0">
+            <span class="opt-letter">A</span> Accuracy
+          </div>
+          <div class="mcq-option" onclick="checkMCQ(this, true)" data-idx="1">
+            <span class="opt-letter">B</span> F1-Score / PR-AUC
+          </div>
+          <div class="mcq-option" onclick="checkMCQ(this, false)" data-idx="2">
+            <span class="opt-letter">C</span> Mean Squared Error (MSE)
+          </div>
+          <div class="mcq-option" onclick="checkMCQ(this, false)" data-idx="3">
+            <span class="opt-letter">D</span> R² Score
+          </div>
+        </div>
+        <div class="mcq-result" id="mcq-result">
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="share-hint">Share your answer on Facebook →</div>
+      </div>
+    </div>
+
+    <!-- Challenge 2: Track Quiz -->
+    <div class="challenge-card">
+      <div class="card-header">
+        <span class="card-num">02</span>
+        <span class="card-icon">🔬</span>
+        <div class="card-title-group">
+          <div class="card-title">What's Your Ri-Sō Track?</div>
+          <div class="card-tagline">Discover your research identity</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Answer three quick questions and we'll reveal which of the five Ri-Sō research tracks fits you best. Share your result and tag a friend who'd get the same one.</p>
+        <div class="quiz-questions">
+          <div class="quiz-q">
+            <label>What excites you most?</label>
+            <select id="q1">
+              <option value="">— Choose —</option>
+              <option value="ai">Teaching machines to see like doctors</option>
+              <option value="sig">Decoding the brain's electrical signals</option>
+              <option value="bio">Reading DNA like a book</option>
+              <option value="mod">Simulating the human heart on a computer</option>
+              <option value="hw">Building devices that touch real patients</option>
+            </select>
+          </div>
+          <div class="quiz-q">
+            <label>Your ideal tool?</label>
+            <select id="q2">
+              <option value="">— Choose —</option>
+              <option value="ai">Python + PyTorch / TensorFlow</option>
+              <option value="sig">MATLAB / MNE / BCI toolboxes</option>
+              <option value="bio">R / Bioconductor / BLAST</option>
+              <option value="mod">COMSOL / ANSYS / SimBiology</option>
+              <option value="hw">Arduino / Altium / Oscilloscope</option>
+            </select>
+          </div>
+          <div class="quiz-q">
+            <label>Dream research outcome?</label>
+            <select id="q3">
+              <option value="">— Choose —</option>
+              <option value="ai">An AI model that detects cancer earlier than any radiologist</option>
+              <option value="sig">A BCI that lets paralyzed patients type with their thoughts</option>
+              <option value="bio">Identifying the genetic root of a rare disease</option>
+              <option value="mod">A digital twin of a diseased organ for drug testing</option>
+              <option value="hw">A wearable that monitors vitals 24/7 at $10 cost</option>
+            </select>
+          </div>
+        </div>
+        <div class="track-result" id="track-result">
+          <div class="track-icon" id="track-icon"></div>
+          <div class="track-name" id="track-name"></div>
+          <div class="track-desc" id="track-desc"></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-gold" onclick="revealTrack()">Reveal My Track →</button>
+        <div class="share-hint">Tag a friend with your result</div>
+      </div>
+    </div>
+
+    <!-- Challenge 3: Caption Challenge -->
+    <div class="challenge-card">
+      <div class="card-header">
+        <span class="card-num">03</span>
+        <span class="card-icon">🖼️</span>
+        <div class="card-title-group">
+          <div class="card-title">Caption This Signal</div>
+          <div class="card-tagline">Where science meets creativity</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">We'll post a biomedical signal image on Facebook. Write the most creative — yet scientifically grounded — caption. Best answer wins a 1-on-1 mentor session.</p>
+        <div class="caption-image">
+          <svg class="ecg-svg" width="100%" height="100" viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grid lines -->
+            <g stroke="rgba(201,168,76,0.08)" stroke-width="0.5">
+              <line x1="0" y1="20" x2="600" y2="20"/>
+              <line x1="0" y1="40" x2="600" y2="40"/>
+              <line x1="0" y1="60" x2="600" y2="60"/>
+              <line x1="0" y1="80" x2="600" y2="80"/>
+              <line x1="100" y1="0" x2="100" y2="100"/>
+              <line x1="200" y1="0" x2="200" y2="100"/>
+              <line x1="300" y1="0" x2="300" y2="100"/>
+              <line x1="400" y1="0" x2="400" y2="100"/>
+              <line x1="500" y1="0" x2="500" y2="100"/>
+            </g>
+            <!-- ECG waveform -->
+            <polyline
+              points="0,55 20,55 30,50 35,55 40,20 45,80 50,55 65,55 70,45 80,45 85,55 100,55 120,55 130,50 135,55 140,20 145,80 150,55 165,55 170,45 180,45 185,55 200,55 220,55 230,50 235,55 240,20 245,80 250,55 265,55 270,45 280,45 285,55 300,55 320,55 330,50 335,55 340,20 345,80 350,55 365,55 370,45 380,45 385,55 400,55 420,55 430,50 435,55 440,20 445,80 450,55 465,55 470,45 480,45 485,55 500,55 520,55 530,50 535,55 540,20 545,80 550,55 565,55 570,45 580,45 585,55 600,55"
+              fill="none"
+              stroke="#c9a84c"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <div class="brain-label">ECG Signal · Lead II · 25mm/s · What do you see?</div>
+        </div>
+        <div class="caption-input-wrap">
+          <textarea placeholder="Write your caption here — be creative, be scientific..."></textarea>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-outline" onclick="this.textContent='Copied! Post on Facebook ✓'; this.style.color='var(--green-light)'; this.style.borderColor='rgba(82,183,136,0.4)'">Copy Caption & Post →</button>
+      </div>
+    </div>
+
+    <!-- Challenge 4: Tag -->
+    <div class="challenge-card">
+      <div class="card-header">
+        <span class="card-num">04</span>
+        <span class="card-icon">🤝</span>
+        <div class="card-title-group">
+          <div class="card-title">Tag Your Research Partner</div>
+          <div class="card-tagline">Build your dream team</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Tag the person you'd want in your Ri-Sō research team and choose your combined track. The duo with the most Facebook likes gets priority application review — both of you.</p>
+        <div class="tag-visual">
+          <div class="track-pill" onclick="selectTrack(this, '🤖 AI & Computer Vision')">
+            <div class="track-pill-icon">🤖</div>
+            <div class="track-pill-name">AI & Vision</div>
+          </div>
+          <div class="track-pill" onclick="selectTrack(this, '📊 Signal Processing')">
+            <div class="track-pill-icon">📊</div>
+            <div class="track-pill-name">Signal Processing</div>
+          </div>
+          <div class="track-pill" onclick="selectTrack(this, '🔬 Bioinformatics')">
+            <div class="track-pill-icon">🔬</div>
+            <div class="track-pill-name">Bioinformatics</div>
+          </div>
+          <div class="track-pill" onclick="selectTrack(this, '⚡ Electronics & Hardware')">
+            <div class="track-pill-icon">⚡</div>
+            <div class="track-pill-name">Electronics</div>
+          </div>
+        </div>
+        <div class="tag-names">
+          <input type="text" placeholder="Your name..." id="name1">
+          <input type="text" placeholder="Partner's name..." id="name2">
+        </div>
+        <div class="tag-result" id="tag-result"></div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-green" onclick="generateTag()">Generate Tag Post →</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Prizes Section -->
+  <div class="prizes-section">
+    <div class="section-label">— What Winners Receive —</div>
+    <div class="prizes-title">Eid Rewards from <em>Ri-Sō</em></div>
+    <p class="prizes-sub">Real program benefits for the best minds this Eid season.</p>
+    <div class="prizes-list">
+      <div class="prize-item">
+        <span class="prize-num">01</span>
+        <span class="prize-icon">⚡</span>
+        <div class="prize-info">
+          <div class="prize-name">Fast-Track Application Review</div>
+          <div class="prize-detail">Skip the queue — your application gets priority evaluation by the Ri-Sō committee.</div>
+        </div>
+      </div>
+      <div class="prize-item">
+        <span class="prize-num">02</span>
+        <span class="prize-icon">🎓</span>
+        <div class="prize-info">
+          <div class="prize-name">Free 1-on-1 Mentor Session</div>
+          <div class="prize-detail">A dedicated session with an IEEE-recognized biomedical expert, before the program even starts.</div>
+        </div>
+      </div>
+      <div class="prize-item">
+        <span class="prize-num">03</span>
+        <span class="prize-icon">🌟</span>
+        <div class="prize-info">
+          <div class="prize-name">Featured Researcher Spotlight</div>
+          <div class="prize-detail">Your profile showcased across all IEEE EMBS E-JUST social media channels.</div>
+        </div>
+      </div>
+      <div class="prize-item">
+        <span class="prize-num">04</span>
+        <span class="prize-icon">🌐</span>
+        <div class="prize-info">
+          <div class="prize-name">Early Webinar Access</div>
+          <div class="prize-detail">First access to the Research Program Series — global speakers, live Q&A, international networking.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Ri-Sō 理創</div>
+  <div class="footer-sub">IEEE EMBS E-JUST Student Branch Chapter · Research Program 2026</div>
+  <div class="footer-cta">
+    <a href="https://embs-rs.vercel.app/" target="_blank">Apply for the Program →</a>
+  </div>
+</footer>
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      --d: ${2 + Math.random() * 4}s;
+      --delay: ${Math.random() * 5}s;
+      --op: ${0.1 + Math.random() * 0.5};
+      width: ${1 + Math.random() * 2}px;
+      height: ${1 + Math.random() * 2}px;
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // MCQ
+  let mcqAnswered = false;
+  function checkMCQ(el, correct) {
+    if (mcqAnswered) return;
+    mcqAnswered = true;
+    const opts = document.querySelectorAll('#mcq1 .mcq-option');
+    const result = document.getElementById('mcq-result');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    el.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct) {
+      opts[1].classList.add('correct');
+    }
+    result.classList.add('show');
+    if (correct) {
+      result.classList.add('correct-result');
+      result.innerHTML = '🎉 <strong>Correct!</strong> Accuracy is misleading on imbalanced data — a model predicting "healthy" for everyone would still score 99%. F1-Score and PR-AUC reveal actual performance on the rare class. Post your answer on Facebook to claim your prize! 🌙';
+    } else {
+      result.classList.add('wrong-result');
+      result.innerHTML = '🔍 Not quite — the answer is <strong>B: F1-Score / PR-AUC</strong>. Accuracy is deceptive here; F1 balances precision and recall on the minority (sick) class. Keep learning — that\'s exactly what Ri-Sō is for!';
+    }
+  }
+
+  // Track quiz
+  const tracks = {
+    ai: {
+      icon: '🤖',
+      name: 'AI & Computer Vision',
+      desc: 'You think in patterns, probabilities, and predictions. Your research will teach machines to diagnose, detect, and decide — with accuracy that rivals the best clinicians.'
+    },
+    sig: {
+      icon: '📊',
+      name: 'Signal Processing & BCI',
+      desc: 'You hear what the body is saying. EEG waves, ECG rhythms, neural spikes — you decode the brain\'s electrical language and build bridges between minds and machines.'
+    },
+    bio: {
+      icon: '🔬',
+      name: 'Bioinformatics',
+      desc: 'You read life at its source code. Genomics, proteomics, sequences — you use computation to unravel biology\'s deepest mysteries one dataset at a time.'
+    },
+    mod: {
+      icon: '💻',
+      name: 'Biomedical Modeling',
+      desc: 'You simulate life itself. Organ models, physiological systems, digital twins — your work lets researchers test therapies before they ever touch a patient.'
+    },
+    hw: {
+      icon: '⚡',
+      name: 'Electronics & Hardware',
+      desc: 'You build the interface between technology and the human body. Sensors, wearables, instrumentation — your devices are the first point of contact in patient care.'
+    }
+  };
+
+  function revealTrack() {
+    const q1 = document.getElementById('q1').value;
+    const q2 = document.getElementById('q2').value;
+    const q3 = document.getElementById('q3').value;
+    if (!q1 || !q2 || !q3) {
+      alert('Please answer all three questions first!');
+      return;
+    }
+    const votes = { ai: 0, sig: 0, bio: 0, mod: 0, hw: 0 };
+    [q1, q2, q3].forEach(v => { if (votes[v] !== undefined) votes[v]++; });
+    const top = Object.entries(votes).sort((a,b) => b[1]-a[1])[0][0];
+    const t = tracks[top];
+    document.getElementById('track-icon').textContent = t.icon;
+    document.getElementById('track-name').textContent = t.name;
+    document.getElementById('track-desc').textContent = t.desc;
+    document.getElementById('track-result').classList.add('show');
+  }
+
+  // Tag challenge
+  let selectedTrack = '';
+  function selectTrack(el, name) {
+    document.querySelectorAll('.track-pill').forEach(p => {
+      p.style.borderColor = 'var(--border)';
+      p.style.background = 'var(--surface)';
+    });
+    el.style.borderColor = 'var(--gold-dim)';
+    el.style.background = 'rgba(201,168,76,0.08)';
+    selectedTrack = name;
+  }
+
+  function generateTag() {
+    const n1 = document.getElementById('name1').value.trim();
+    const n2 = document.getElementById('name2').value.trim();
+    if (!n1 || !n2 || !selectedTrack) {
+      alert('Please fill in both names and select a track!');
+      return;
+    }
+    const result = document.getElementById('tag-result');
+    result.innerHTML = `
+      🌙 <strong>Eid Mubarak!</strong><br><br>
+      <strong>${n1}</strong> is tagging <strong>${n2}</strong> as their Ri-Sō research partner in the <em>${selectedTrack}</em> track.<br><br>
+      Together we'll go from talent → published IEEE paper in 5 months. 🔬<br><br>
+      <span style="color:var(--muted);font-size:0.85rem;">Copy this and post it on Facebook — tag your partner and like each other's posts to win! ☽</span>
+    `;
+    result.classList.add('show');
+  }
+</script>
+</body>
+</html>
